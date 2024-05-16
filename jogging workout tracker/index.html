@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogging Activity Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: cornflowerblue;
+        }
+
+        #tracker {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        #log {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="tracker">
+        <h1><u>Jogging Activity Tracker</u></h1>
+        <label for="distance">Enter Distance (in miles):</label>
+        <input type="number" id="distance" step="0.1" min="0" placeholder="Enter distance">
+
+        <label for="date">Select Date:</label>
+        <input type="date" id="date">
+
+        <button onclick="logJog()">Log Jog</button>
+
+        <div id="log">
+            <h2><u>Activity Log</u></h2>
+            <ul id="activityList"></ul>
+        </div>
+    </div>
+
+    <script>
+        function logJog() {
+            const distanceInput = document.getElementById('distance');
+            const dateInput = document.getElementById('date');
+
+            const distance = parseFloat(distanceInput.value);
+            const date = dateInput.value;
+
+            if (isNaN(distance) || !date) {
+                alert('Please enter valid data.');
+                return;
+            }
+
+            const jog = {
+                distance: distance,
+                date: date
+            };
+
+            // Get existing activities from local storage
+            let activities = JSON.parse(localStorage.getItem('activities')) || [];
+
+            // Add the new jog to the activities
+            activities.push(jog);
+
+            // Save the updated activities to local storage
+            localStorage.setItem('activities', JSON.stringify(activities));
+
+            // Update the activity log on the page
+            updateActivityLog();
+        }
+
+        function updateActivityLog() {
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = '';
+
+            // Get activities from local storage
+            const activities = JSON.parse(localStorage.getItem('activities')) || [];
+
+            // Display each activity in the list
+            activities.forEach((activity, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Date: ${activity.date}, Distance: ${activity.distance} miles`;
+                activityList.appendChild(listItem);
+            });
+        }
+
+        // Initial update when the page loads
+        updateActivityLog();
+    </script>
+</body>
+</html>
